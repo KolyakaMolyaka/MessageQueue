@@ -34,11 +34,15 @@ int main(int argc, char **argv) {
     start_receive_messages_timer();
     set_receive_messages_timer(statistics_time);
 
+
     // get start time of receiving messages 
     time_t start_receive_messages_time = time(NULL);
 
+    // get end time of receiving messages
+    time_t end_receive_messages_time = time(NULL);
+
     // receive messages and calculate statistics
-    while ( !receive_messages_timeout() ) {
+    while ( difftime(end_receive_messages_time, start_receive_messages_time) < statistics_time ) {
         // recieve messages with all types
         struct mymsgbuf qbuf;
         read_message(msgqid, 0, &qbuf);
@@ -52,11 +56,8 @@ int main(int argc, char **argv) {
 
         // calculate time in queue of recieved message
         //time_ns_diff(Message.sendtime, receivetime, &messages_in_queue_time);
+        time(&end_receive_messages_time);
     }
-
-    // get end time of receiving messages
-    time_t end_receive_messages_time = time(NULL);
-
     // calculate receiving messages time
     double recieve_messages_time = difftime(end_receive_messages_time, start_receive_messages_time);
     //time_ns_diff(start_receive_messages_time, end_receive_messages_time, &recieve_messages_time);
