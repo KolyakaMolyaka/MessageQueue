@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "message_queue_config.h"
-#include "message_tools.h"
+#include "messages_tools.h"
 
 // declaration of tools
 void generate_random_message(char *msg, int length);
