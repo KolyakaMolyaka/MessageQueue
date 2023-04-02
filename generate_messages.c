@@ -13,6 +13,14 @@
 void generate_random_message(char *msg, int length);
 
 int main(int argc, char **argv) {
+    if (argc != 2) {
+        printf("Error: invalid input.\n");
+        printf("You should give 1 mandatory argument - time in seconds to calculate message queue statistics.\n");
+        printf("Example: %s 5\n", argv[0]);
+        return 1;
+    }
+
+    int statistics_time = atoi(argv[1]);
     srand(time(NULL));
 
     // create message queue and shared statistics unique keys
@@ -25,8 +33,11 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    // generate and send messages with 
-    for (;;) {
+    start_receive_messages_timer();
+    set_receive_messages_timer(statistics_time);
+
+    // generate and send messages with content while not timeout
+    while ( !receive_messages_timeout() ) {
         // create random message content
         int random_message_length = rand() % MAX_MSG_SIZE;
         char *random_msg = (char*)malloc(random_message_length * sizeof(char));
