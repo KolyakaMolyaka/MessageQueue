@@ -1,12 +1,9 @@
-#include <unistd.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
 #include <time.h>
-#include <stdlib.h>
-#include <malloc.h>
 #include <stdio.h>
-#include <string.h>
-#include <math.h>
+#include <stdlib.h>
+
 #include "msglib.h"
 
 int main(int argc, char **argv) {

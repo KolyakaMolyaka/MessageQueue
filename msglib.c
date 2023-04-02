@@ -1,9 +1,8 @@
 #include "msglib.h"
-#include <errno.h>
-#include <unistd.h>
+//#include <errno.h>
+//#include <unistd.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
-#include <stdio.h>
 
 int open_queue(key_t keyval) {
     // открытие или создание очереди сообщений
