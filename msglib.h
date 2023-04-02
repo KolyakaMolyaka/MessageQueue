@@ -8,7 +8,6 @@
 struct mymsgbuf {
     long mtype;
     time_t sendtime;
-    double salary;
 };
 
 int open_queue(key_t keyval);
