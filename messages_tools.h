@@ -2,7 +2,7 @@
 #define RECEIVE_MESSAGES_TOOLS_H_
 
 #include <time.h>
-#define MAX_MSG_SIZE 256
+#include "message_queue_config.h"
 
 // declaration of message struct
 struct {

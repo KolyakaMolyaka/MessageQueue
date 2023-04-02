@@ -6,12 +6,8 @@
 #include <malloc.h>
 #include <stdio.h>
 #include <string.h>
-#include "receive_messages_tools.h"
-
-// define message queue settings 
-#define MESSAGES_QUEUE_KEY "message_secret"
-#define MAX_MSG_SIZE 256 
-#define MAX_MSG_TYPE 5
+#include "message_queue_config.h"
+#include "messages_tools.h"
 
 int main(int argc, char **argv) {
     if (argc != 2) {

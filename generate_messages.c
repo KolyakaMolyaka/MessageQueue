@@ -6,20 +6,8 @@
 #include <malloc.h>
 #include <stdio.h>
 #include <string.h>
-
-// define message queue settings 
-#define MESSAGES_QUEUE_KEY "message_secret"
-#define MAX_MSG_SIZE 256 
-#define MAX_MSG_TYPE 5
-#define MIN_SEND_MSG_INTERVAL_SECS 1
-#define MAX_SEND_MSG_INTERVAL_SECS 3
-
-// declaration of message struct
-struct {
-    long mtype; 
-    char Data[MAX_MSG_SIZE];
-    struct timespec sendtime;
-} Message;
+#include "message_queue_config.h"
+#include "message_tools.h"
 
 // declaration of tools
 void generate_random_message(char *msg, int length);
@@ -58,10 +46,6 @@ int main(int argc, char **argv) {
 
         // free memory of last message content
         free(random_msg);
-
-        // sleep before send new message
-        int sleep_time = rand() % (MAX_SEND_MSG_INTERVAL_SECS - MIN_SEND_MSG_INTERVAL_SECS);
-        sleep(sleep_time);
     }
 
     // delete message queue
