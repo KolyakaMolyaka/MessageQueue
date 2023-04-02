@@ -18,7 +18,11 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    int statistics_time = atoi(argv[1]);
+    int timeout_secs = atoi(argv[1]);
+    if (timeout_secs == 0) {
+        printf("Can't convert argument to integer.\n");
+    }
+
     srand(time(NULL));
 
     // create message queue and shared statistics unique keys
@@ -34,7 +38,7 @@ int main(int argc, char **argv) {
     time_t end_receive_messages_time = time(NULL);
 
     // generate and send messages with content while not timeout
-    while ( difftime(end_receive_messages_time, start_receive_messages_time) < statistics_time ) {
+    while ( difftime(end_receive_messages_time, start_receive_messages_time) < timeout_secs ) {
         // create random message content
         struct mymsgbuf qbuf;
 
