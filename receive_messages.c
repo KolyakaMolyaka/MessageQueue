@@ -16,7 +16,10 @@ int main(int argc, char **argv) {
         printf("Example: %s 5\n", argv[0]);
         return 1;
     }
-    int statistics_time = atoi(argv[1]);
+    int timeout_secs = atoi(argv[1]);
+    if (timeout_secs == 0) {
+        printf("Can't convert argument to integer.\n");
+    }
 
     // create message queue key 
     key_t key_msg_queue = ftok(MESSAGES_QUEUE_KEY, 0);
@@ -35,7 +38,7 @@ int main(int argc, char **argv) {
     time_t end_receive_messages_time = time(NULL);
 
     // receive messages and calculate statistics
-    while ( difftime(end_receive_messages_time, start_receive_messages_time) < statistics_time ) {
+    while ( difftime(end_receive_messages_time, start_receive_messages_time) < timeout_secs ) {
 
         // recieve messages with all types
         struct mymsgbuf qbuf;
