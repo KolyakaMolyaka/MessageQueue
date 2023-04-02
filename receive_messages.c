@@ -12,9 +12,16 @@
 #define MESSAGES_QUEUE_KEY "message_secret"
 #define MAX_MSG_SIZE 256 
 #define MAX_MSG_TYPE 5
-//#define MIN_SEND_MSG_INTERVAL_SECS 1
-//#define MAX_SEND_MSG_INTERVAL_SECS 3
+
 int main(int argc, char **argv) {
+    if (argc != 2) {
+        printf("Error: invalid input.\n");
+        printf("You should give 1 mandatory argument - time in seconds to calculate message queue statistics.\n");
+        printf("Example: %s 5\n", argv[0]);
+        return 1;
+    }
+    int statistics_time = atoi(argv[1]);
+
     // create message queue key 
     key_t key_msg_queue = ftok(MESSAGES_QUEUE_KEY, 0);
 
@@ -32,8 +39,11 @@ int main(int argc, char **argv) {
     struct timespec start_receive_messages_time;
     clock_gettime(CLOCK_REALTIME, &start_receive_messages_time);
 
+    start_receive_messages_timer();
+    set_receive_messages_timer(statistics_time);
+
     // receive messages and calculate statistics
-    for (;;) {
+    while ( !receive_messages_timeout() ) {
         // recieve messages with all types
         struct timespec receivetime;
         msgrcv(msgqid, (&Message), MAX_MSG_SIZE, 0, 0);
