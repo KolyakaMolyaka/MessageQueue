@@ -7,9 +7,10 @@ void time_ns_diff(struct timespec starttime, struct timespec endtime, long long 
 
 double TIMER_DURATION;
 time_t TIMER_START_TIME;
+double TIMER_WORK_TIME;
 
 void start_receive_messages_timer();
 void set_receive_messages_timer(int seconds);
 int receive_messages_timeout();
-
+double get_timer_work_time();
 #endif

@@ -22,6 +22,15 @@ int receive_messages_timeout() {
     time(&current_time);
 
     double elapsed_time = difftime(current_time, TIMER_START_TIME);
-    if (elapsed_time > TIMER_DURATION) return 1;
+    if (elapsed_time > TIMER_DURATION)
+    {
+        TIMER_WORK_TIME = elapsed_time; 
+        return 1;
+    }
     return 0;
 }
+
+double get_timer_work_time() {
+    return TIMER_WORK_TIME;
+}
+
