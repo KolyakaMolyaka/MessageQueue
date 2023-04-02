@@ -6,8 +6,10 @@
 #include <malloc.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include "message_queue_config.h"
 #include "messages_tools.h"
+#include "msglib.h"
 
 int main(int argc, char **argv) {
     if (argc != 2) {
@@ -22,53 +24,53 @@ int main(int argc, char **argv) {
     key_t key_msg_queue = ftok(MESSAGES_QUEUE_KEY, 0);
 
     // connect to message queue
-    int msgqid = msgget(key_msg_queue, 0666);
-    if (msgqid == -1) {
-        printf("Can't connect to message queue.\n");
-        return 1;
-    }
 
-    long long messages_in_queue_time = 0;   // total messages time in queue
+    int msgqid = open_queue(key_msg_queue);
+
+    // init statistics variables
+    double messages_in_queue_time = 0;
     long long received_messages_amount = 0; // total received messages from queue
-
 
     start_receive_messages_timer();
     set_receive_messages_timer(statistics_time);
 
     // get start time of receiving messages 
-    struct timespec start_receive_messages_time;
-    clock_gettime(CLOCK_REALTIME, &start_receive_messages_time);
+    time_t start_receive_messages_time = time(NULL);
 
     // receive messages and calculate statistics
     while ( !receive_messages_timeout() ) {
         // recieve messages with all types
-        msgrcv(msgqid, (&Message), MAX_MSG_SIZE, 0, 0);
-
+        struct mymsgbuf qbuf;
+        read_message(msgqid, 0, &qbuf);
+        
         // get recieved message time
-        struct timespec receivetime;
-        clock_gettime(CLOCK_REALTIME, &receivetime);
+        time_t current_time = time(NULL);
+        messages_in_queue_time += difftime(current_time, qbuf.sendtime);
 
         // increase received messages amount
         ++received_messages_amount;
 
         // calculate time in queue of recieved message
-        time_ns_diff(Message.sendtime, receivetime, &messages_in_queue_time);
+        //time_ns_diff(Message.sendtime, receivetime, &messages_in_queue_time);
     }
 
     // get end time of receiving messages
-    struct timespec end_receive_messages_time;
-    clock_gettime(CLOCK_REALTIME, &end_receive_messages_time);
+    time_t end_receive_messages_time = time(NULL);
 
     // calculate receiving messages time
-    long long recieve_messages_time;
-    time_ns_diff(start_receive_messages_time, end_receive_messages_time, &recieve_messages_time);
+    double recieve_messages_time = difftime(end_receive_messages_time, start_receive_messages_time);
+    //time_ns_diff(start_receive_messages_time, end_receive_messages_time, &recieve_messages_time);
+
+    // print common statistics
+    printf("~Total received messages: %lli msgs.\n", received_messages_amount);
+    printf("~Total receive time: %lfs\n", recieve_messages_time);
 
     // calculate and print statistics
-    long long bandwidth_of_message_queue = received_messages_amount / recieve_messages_time;
+    long long bandwidth_of_message_queue =  received_messages_amount / recieve_messages_time;
     printf("Average bandwidth of messages queue channel: %lld msgs/ns.\n", bandwidth_of_message_queue);
 
-    long long delay_of_message_queue = messages_in_queue_time / received_messages_amount;
-    printf("Average delay of time of messages queue channel: %lld ns.\n", delay_of_message_queue);
+    double delay_of_message_queue = messages_in_queue_time / received_messages_amount;
+    printf("Average delay of time of messages queue channel: %lfs.\n", delay_of_message_queue);
 
 
     return 0;
