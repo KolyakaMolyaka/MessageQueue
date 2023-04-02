@@ -6,9 +6,9 @@
 #include <malloc.h>
 #include <stdio.h>
 #include <string.h>
-#include "message_queue_config.h"
-#include "messages_tools.h"
 #include "msglib.h"
+
+#define MAX_MSG_TYPE 5
 
 int main(int argc, char **argv) {
     if (argc != 2) {
@@ -27,11 +27,14 @@ int main(int argc, char **argv) {
     // create message queue
     int msgqid = open_queue(key_msg_queue);
 
-    start_receive_messages_timer();
-    set_receive_messages_timer(statistics_time);
+    // get start time of sending messages 
+    time_t start_receive_messages_time = time(NULL);
+
+    // get end time of sending messages
+    time_t end_receive_messages_time = time(NULL);
 
     // generate and send messages with content while not timeout
-    while ( !receive_messages_timeout() ) {
+    while ( difftime(end_receive_messages_time, start_receive_messages_time) < statistics_time ) {
         // create random message content
         struct mymsgbuf qbuf;
 
@@ -44,6 +47,8 @@ int main(int argc, char **argv) {
 
         // send random message
         send_message(msgqid, &qbuf); 
+
+        time(&end_receive_messages_time);
     }
 
     // delete message queue

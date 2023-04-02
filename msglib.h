@@ -4,7 +4,8 @@
 #include <time.h>
 #include <sys/ipc.h>
 
-#define MESSAGE_MAX_SIZE 256
+#define MESSAGES_QUEUE_KEY "message_secret"
+
 struct mymsgbuf {
     long mtype;
     time_t sendtime;

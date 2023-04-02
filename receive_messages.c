@@ -7,8 +7,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include "message_queue_config.h"
-#include "messages_tools.h"
 #include "msglib.h"
 
 int main(int argc, char **argv) {
@@ -24,16 +22,11 @@ int main(int argc, char **argv) {
     key_t key_msg_queue = ftok(MESSAGES_QUEUE_KEY, 0);
 
     // connect to message queue
-
     int msgqid = open_queue(key_msg_queue);
 
     // init statistics variables
     double messages_in_queue_time = 0;
     long long received_messages_amount = 0; // total received messages from queue
-
-    start_receive_messages_timer();
-    set_receive_messages_timer(statistics_time);
-
 
     // get start time of receiving messages 
     time_t start_receive_messages_time = time(NULL);
@@ -43,6 +36,7 @@ int main(int argc, char **argv) {
 
     // receive messages and calculate statistics
     while ( difftime(end_receive_messages_time, start_receive_messages_time) < statistics_time ) {
+
         // recieve messages with all types
         struct mymsgbuf qbuf;
         read_message(msgqid, 0, &qbuf);
@@ -55,12 +49,10 @@ int main(int argc, char **argv) {
         ++received_messages_amount;
 
         // calculate time in queue of recieved message
-        //time_ns_diff(Message.sendtime, receivetime, &messages_in_queue_time);
         time(&end_receive_messages_time);
     }
     // calculate receiving messages time
     double recieve_messages_time = difftime(end_receive_messages_time, start_receive_messages_time);
-    //time_ns_diff(start_receive_messages_time, end_receive_messages_time, &recieve_messages_time);
 
     // print common statistics
     printf("~Total received messages: %lli msgs.\n", received_messages_amount);
