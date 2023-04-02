@@ -35,23 +35,24 @@ int main(int argc, char **argv) {
     long long messages_in_queue_time = 0;   // total messages time in queue
     long long received_messages_amount = 0; // total received messages from queue
 
-    // get start time of receiving messages 
-    struct timespec start_receive_messages_time;
-    clock_gettime(CLOCK_REALTIME, &start_receive_messages_time);
 
     start_receive_messages_timer();
     set_receive_messages_timer(statistics_time);
 
+    // get start time of receiving messages 
+    struct timespec start_receive_messages_time;
+    clock_gettime(CLOCK_REALTIME, &start_receive_messages_time);
+
     // receive messages and calculate statistics
     while ( !receive_messages_timeout() ) {
         // recieve messages with all types
-        struct timespec receivetime;
         msgrcv(msgqid, (&Message), MAX_MSG_SIZE, 0, 0);
 
         // get recieved message time
+        struct timespec receivetime;
         clock_gettime(CLOCK_REALTIME, &receivetime);
 
-        // increase received message amount
+        // increase received messages amount
         ++received_messages_amount;
 
         // calculate time in queue of recieved message
