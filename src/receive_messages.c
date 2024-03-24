@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 
     // init statistics variables
     double messages_in_queue_time = 0;
-    long long received_messages_amount = 0; // total received messages from queue
+    double received_messages_amount = 0; // total received messages from queue
 
     // get start time of receiving messages 
     time_t start_receive_messages_time = time(NULL);
